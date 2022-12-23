@@ -14,6 +14,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "preserve",
+    "types": ["node", "mocha", "meteor", "meteor-roles", "cultofcoders:grapher"],
     "noFallthroughCasesInSwitch": true,
     "downlevelIteration": true,
     "noImplicitAny": false,
@@ -24,7 +25,10 @@
   },
   "extends": "./tsconfig.paths.json",
   "include": [
-    "imports/**/*",
+    "imports",
+    "client",
+    "server",
+    "global.d.ts"
   ],
   "exclude": [
     "./.meteor/**",

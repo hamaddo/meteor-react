@@ -6,8 +6,6 @@ import { App } from '/imports/ui/App';
 
 import { BrowserRouter } from 'react-router-dom';
 
-import { Meteor } from 'meteor/meteor';
-
 Meteor.startup(() => {
   render(
     <BrowserRouter>

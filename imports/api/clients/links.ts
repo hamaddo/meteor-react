@@ -1,8 +1,7 @@
 import { ClientsCollection } from '/imports/api/clients/ClientsCollection';
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-/*ClientsCollection.addLinks({
+/*
+ClientsCollection.addLinks({
   requests: {
     type: 'one',
     collection: GoodsCollection,
@@ -13,4 +12,5 @@ import { ClientsCollection } from '/imports/api/clients/ClientsCollection';
     collection: SellerCollection,
     field: 'sellerId',
   },
-});*/
+});
+*/

@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 
-import { useNavigate } from 'react-router-dom';
-
 import { Meteor } from 'meteor/meteor';
 
 import { Loader } from '/imports/ui/shared/ui/Loader';
