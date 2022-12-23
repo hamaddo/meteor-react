@@ -8,16 +8,22 @@ import { PublicRoute } from './components/PublicRoute';
 
 import { clientRoutes } from '/imports/ui/pages/Client/routes';
 import { usersRoutes } from '/imports/ui/pages/Users/routes';
+import { RoleRoute } from '/imports/ui/components/RoleRoute';
+import { RolesEnum } from '/imports/api/user';
 
 export const App = () => {
   return useRoutes([
     {
       element: <ProtectedRoute />,
-      children: [...clientRoutes, ...usersRoutes],
+      children: [...clientRoutes],
     },
     {
       element: <PublicRoute />,
       children: [{ path: '/login', element: <LoginForm /> }],
+    },
+    {
+      element: <RoleRoute roles={[RolesEnum.ADMIN]} />,
+      children: [...usersRoutes],
     },
     {
       element: <Navigate to={'/clients'} />,
