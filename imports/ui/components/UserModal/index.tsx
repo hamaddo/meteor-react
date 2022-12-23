@@ -4,7 +4,7 @@ import { Box, Modal } from '@mui/material';
 
 import { UserFields, UserForm } from './UserForm';
 
-import { UserType } from '/imports/ui/pages/Users';
+import { UserType } from '/imports/api/user';
 
 type Props = {
   onClose: () => void;

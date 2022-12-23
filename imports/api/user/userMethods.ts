@@ -1,16 +1,7 @@
 import { Accounts } from 'meteor/accounts-base';
 import { Meteor } from 'meteor/meteor';
 
-Meteor.publish('usersRoles', function () {
-  return Meteor.users.find(
-    {},
-    {
-      fields: {
-        roles: 1,
-      },
-    }
-  );
-});
+import { RolesEnum } from '/imports/api/user/index';
 
 Meteor.methods({
   'user.get'() {
@@ -29,12 +20,24 @@ Meteor.methods({
     return Meteor.users.findOne({ _id: id });
   },
 
-  'user.insert'({ username, password }: { username: string; password: string }) {
+  'user.insert'({ username, password, role }: { username: string; password: string; role: RolesEnum }) {
     if (!this.userId) {
       throw new Meteor.Error('Not authorized.');
     }
 
-    return Accounts.createUser({ username, password });
+    const user = Accounts.createUser({
+      username,
+      password,
+    });
+
+    Meteor.users.update(user, {
+      $set: {
+        username,
+        role: role,
+      },
+    });
+
+    return user;
   },
 
   'user.remove'({ userId }: { userId: string }) {
@@ -45,7 +48,17 @@ Meteor.methods({
     Meteor.users.remove({ _id: userId });
   },
 
-  'user.update'({ userId, username }: { userId: string; username: string }) {
+  'user.getUserRole'() {
+    if (!this.userId) {
+      throw new Meteor.Error('Not authorized.');
+    }
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    return Meteor.users.findOne({ _id: this.userId })?.role;
+  },
+
+  'user.update'({ userId, username, role }: { userId: string; username: string; role: RolesEnum }) {
     if (!this.userId) {
       throw new Meteor.Error('Not authorized.');
     }
@@ -53,6 +66,7 @@ Meteor.methods({
     Meteor.users.update(userId, {
       $set: {
         username,
+        role: role,
       },
     });
   },

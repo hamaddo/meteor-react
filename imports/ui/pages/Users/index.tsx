@@ -9,8 +9,7 @@ import { useMeteorCall } from '/imports/ui/shared/hooks/useMeteorCall';
 import { ItemsList } from '/imports/ui/widgets/ItemsList';
 import { UserModal } from '/imports/ui/components/UserModal';
 import { UserFields } from '/imports/ui/components/UserModal/UserForm';
-
-export type UserType = { username: string; _id: string };
+import { UserType } from '/imports/api/user';
 
 export const UsersList = () => {
   const { data: clients, isLoading, request } = useMeteorCall<UserType[]>('user.get');
@@ -34,13 +33,17 @@ export const UsersList = () => {
     setEditVisible((prev) => !prev);
   };
   const onSubmitCreate = async (values: UserFields) => {
-    await Meteor.callAsync('user.insert', { ...values });
+    await Meteor.callAsync('user.insert', { ...values, role: values.role.value });
     toggleCreateVisible();
     await request();
   };
 
   const onSubmitEdit = async (values: UserFields) => {
-    await Meteor.callAsync('user.update', { userId: currentUser?._id, username: values.username });
+    await Meteor.callAsync('user.update', {
+      userId: currentUser?._id,
+      username: values.username,
+      role: values.role.value,
+    });
     toggleEditVisible();
     await request();
   };

@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 
-import { ManageAccounts, AttachMoney, AccountCircle } from '@mui/icons-material';
+import { AccountCircle } from '@mui/icons-material';
 import { AppBar, CssBaseline } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -19,10 +19,11 @@ import { useTracker } from 'meteor/react-meteor-data';
 import { useMeteorCall } from '../../shared/hooks/useMeteorCall';
 import { Loader } from '../../shared/ui/Loader';
 
+import { RolesEnum } from '/imports/api/user';
+
 type ListType = {
   text: string;
   path: string;
-  icon: JSX.Element;
   roles?: string[];
 };
 
@@ -30,18 +31,17 @@ const list: ListType[] = [
   {
     text: 'Работодатели',
     path: '/employers',
-    icon: <AttachMoney />,
+    roles: [RolesEnum.ADMIN, RolesEnum.USER],
   },
   {
     text: 'Клиенты',
     path: '/clients',
-    icon: <ManageAccounts />,
+    roles: [RolesEnum.ADMIN, RolesEnum.USER],
   },
   {
     text: 'Одменка',
     path: '/users',
-    icon: <ManageAccounts />,
-    roles: ['admin'],
+    roles: [RolesEnum.ADMIN],
   },
 ];
 
@@ -49,7 +49,7 @@ export const Navbar: FC = ({ children }) => {
   const user = useTracker(() => Meteor.user());
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
-  const { data: userRoles, isLoading } = useMeteorCall<string[]>('user.getUserRoles');
+  const { data: userRole, isLoading } = useMeteorCall<string>('user.getUserRole');
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -79,15 +79,20 @@ export const Navbar: FC = ({ children }) => {
               [Копия] HH
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-              {list.map((page) => (
-                <Button
-                  key={page.text}
-                  onClick={() => navigate(page.path)}
-                  sx={{ my: 2, color: 'white', display: 'block' }}
-                >
-                  {page.text}
-                </Button>
-              ))}
+              {list.map((page) => {
+                if (userRole && !page.roles?.includes(userRole)) {
+                  return null;
+                }
+                return (
+                  <Button
+                    key={page.text}
+                    onClick={() => navigate(page.path)}
+                    sx={{ my: 2, color: 'white', display: 'block' }}
+                  >
+                    {page.text}
+                  </Button>
+                );
+              })}
             </Box>
 
             <Box sx={{ flexGrow: 0 }}>
