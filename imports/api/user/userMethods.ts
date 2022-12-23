@@ -37,15 +37,23 @@ Meteor.methods({
     return Accounts.createUser({ username, password });
   },
 
-  'user.register'({ username, password }: { username: string; password: string }) {
-    return Accounts.createUser({ username, password });
-  },
-
   'user.remove'({ userId }: { userId: string }) {
     if (!this.userId) {
       throw new Meteor.Error('Not authorized.');
     }
 
     Meteor.users.remove({ _id: userId });
+  },
+
+  'user.update'({ userId, username }: { userId: string; username: string }) {
+    if (!this.userId) {
+      throw new Meteor.Error('Not authorized.');
+    }
+
+    Meteor.users.update(userId, {
+      $set: {
+        username,
+      },
+    });
   },
 });

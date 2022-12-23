@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -6,43 +6,72 @@ import { Meteor } from 'meteor/meteor';
 
 import { Loader } from '/imports/ui/shared/ui/Loader';
 import { useMeteorCall } from '/imports/ui/shared/hooks/useMeteorCall';
-
-import { routes } from './routes';
-
 import { ItemsList } from '/imports/ui/widgets/ItemsList';
+import { UserModal } from '/imports/ui/components/UserModal';
+import { UserFields } from '/imports/ui/components/UserModal/UserForm';
 
-type UserType = { username: string; _id: string };
+export type UserType = { username: string; _id: string };
 
 export const UsersList = () => {
   const { data: clients, isLoading, request } = useMeteorCall<UserType[]>('user.get');
+  const [createVisible, setCreateVisible] = useState(false);
+  const [editVisible, setEditVisible] = useState(false);
+  const [currentUser, setCurrentUser] = useState<UserType>();
 
-  const navigate = useNavigate();
   if (isLoading) {
     return <Loader />;
   }
-
-  const onCreate = () => {
-    navigate(routes.list);
-  };
-
-  const onEdit = (id: string) => {
-    Meteor.call('users.remove', id);
-    request();
-  };
-
-  const onDelete = (id: string) => {
-    Meteor.call('users.remove', id);
-    request();
-  };
 
   const mappedList = clients?.map(({ username, _id }) => ({
     info: `${username}`,
     id: _id,
   }));
+  const toggleCreateVisible = () => {
+    setCreateVisible((prev) => !prev);
+  };
+
+  const toggleEditVisible = () => {
+    setEditVisible((prev) => !prev);
+  };
+  const onSubmitCreate = async (values: UserFields) => {
+    await Meteor.callAsync('user.insert', { ...values });
+    toggleCreateVisible();
+    await request();
+  };
+
+  const onSubmitEdit = async (values: UserFields) => {
+    await Meteor.callAsync('user.update', { userId: currentUser?._id, username: values.username });
+    toggleEditVisible();
+    await request();
+  };
+
+  const onEdit = async (id: string) => {
+    const user = await Meteor.callAsync('user.getById', { id });
+    setCurrentUser(user);
+    toggleEditVisible();
+  };
+  const onDelete = async (id: string) => {
+    Meteor.call('user.remove', { userId: id });
+    await request();
+  };
 
   return (
     <div>
-      <ItemsList data={mappedList ?? []} title={'Пользователи'} onDeleteItem={onDelete} onCreate={onCreate} />
+      <ItemsList
+        data={mappedList ?? []}
+        title={'Пользователи'}
+        onDeleteItem={onDelete}
+        onEditItem={onEdit}
+        onCreate={toggleCreateVisible}
+      />
+      <UserModal visible={createVisible} onClose={toggleCreateVisible} onSubmit={onSubmitCreate} />
+      <UserModal
+        onClose={toggleEditVisible}
+        visible={editVisible}
+        user={currentUser}
+        onSubmit={onSubmitEdit}
+        submitText={'Редактировать'}
+      />
     </div>
   );
 };

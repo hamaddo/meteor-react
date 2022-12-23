@@ -37,7 +37,7 @@ export const ItemsList: React.FC<Props> = ({ title, data, onDeleteItem, onEditIt
                 <IconButton
                   onClick={(e: React.MouseEvent) => {
                     e.stopPropagation();
-                    if (onDeleteItem) onDeleteItem(id);
+                    if (onEditItem) onEditItem(id);
                   }}
                 >
                   <Edit />
@@ -46,7 +46,7 @@ export const ItemsList: React.FC<Props> = ({ title, data, onDeleteItem, onEditIt
                 <IconButton
                   onClick={(e: React.MouseEvent) => {
                     e.stopPropagation();
-                    if (onEditItem) onEditItem(id);
+                    if (onDeleteItem) onDeleteItem(id);
                   }}
                 >
                   <Delete />

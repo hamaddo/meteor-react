@@ -17,7 +17,7 @@ export const ProtectedRoute: React.FC = () => {
         main: '#a05f5f',
       },
       secondary: {
-        main: '#f50057',
+        main: '#79cfcf',
       },
     },
   });

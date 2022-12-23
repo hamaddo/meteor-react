@@ -20,8 +20,6 @@ export const ClientsList = () => {
     return <Loader />;
   }
 
-  console.log('я покакал');
-
   const onCreate = () => {
     navigate(routes.list);
   };
@@ -38,7 +36,6 @@ export const ClientsList = () => {
 
   return (
     <div>
-      <h1>ПОШЕЛ НАХУЙ МЕНЖУЛЬКА</h1>
       <button onClick={onCreate}>создать</button>
       <button onClick={() => onDelete('1')}>удалить</button>
       {mappedList?.map((item) => (
