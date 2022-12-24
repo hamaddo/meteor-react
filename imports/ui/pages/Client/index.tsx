@@ -1,67 +1,74 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-import { useNavigate } from 'react-router-dom';
-
-import { Box, Button, Stack } from '@mui/material';
 import { Meteor } from 'meteor/meteor';
 
 import { Loader } from '/imports/ui/shared/ui/Loader';
 import { useMeteorCall } from '/imports/ui/shared/hooks/useMeteorCall';
-
-import { routes } from './routes';
+import { ItemsList } from '/imports/ui/widgets/ItemsList';
+import { Client } from '/imports/api/clients';
+import { ClientModal } from '/imports/ui/components/ClientsModal';
+import { ClientFields } from '/imports/ui/components/ClientsModal/ClientForm';
 
 export const ClientsList = () => {
-  const { data: clients, isLoading, request } = useMeteorCall<any[]>('user.get');
+  const { data: clients, isLoading, request } = useMeteorCall<Client[]>('clients.get');
+  const [createVisible, setCreateVisible] = useState(false);
+  const [editVisible, setEditVisible] = useState(false);
+  const [currentClient, setCurrentClient] = useState<Client>();
 
-  console.log('clients', clients);
-
-  const navigate = useNavigate();
   if (isLoading) {
     return <Loader />;
   }
 
-  const onCreate = () => {
-    navigate(routes.list);
-  };
-
-  const onDelete = (id: string) => {
-    Meteor.call('store.remove', id);
-    request();
-  };
-
-  const mappedList = clients?.map(({ name, address, _id }) => ({
-    line: `${name} ${address}`,
+  const mappedList = clients?.map(({ name, middleName, surname, receiptNumber, _id }) => ({
+    info: `${name} ${middleName} ${surname} ${surname} - ${receiptNumber}`,
     id: _id,
   }));
+  const toggleCreateVisible = () => {
+    setCreateVisible((prev) => !prev);
+  };
+
+  const toggleEditVisible = () => {
+    setEditVisible((prev) => !prev);
+  };
+  const onSubmitCreate = async (values: ClientFields) => {
+    await Meteor.callAsync('clients.insert', { client: values });
+    toggleCreateVisible();
+    await request();
+  };
+
+  const onSubmitEdit = async (values: ClientFields) => {
+    await Meteor.callAsync('clients.update', { request: { ...values, prevSurname: currentClient?.surname } });
+    toggleEditVisible();
+    await request();
+  };
+
+  const onEdit = async (id: string) => {
+    const client = await Meteor.callAsync('clients.getById', { id });
+    setCurrentClient(client);
+    toggleEditVisible();
+  };
+  const onDelete = async (id: string) => {
+    Meteor.call('clients.remove', { clientId: id });
+    await request();
+  };
 
   return (
     <div>
-      <button onClick={onCreate}>создать</button>
-      <button onClick={() => onDelete('1')}>удалить</button>
-      {mappedList?.map((item) => (
-        <div key={item.id}>{item.id}</div>
-      ))}
-
-      <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-        <h2>Пользователи</h2>
-        {!mappedList?.length && <div>Пусто</div>}
-        <Stack gap={2}>
-          {mappedList?.map(({ line, id }) => (
-            <Stack key={id} direction="row" justifyContent="space-between" alignItems="center" spacing={1}>
-              <div>{line}</div>
-              <Stack direction="row" spacing={1}>
-                <Button variant="contained" color="secondary">
-                  Изменить
-                </Button>
-                <Button variant="contained" color="error" onClick={() => onDelete(id)}>
-                  Удалить
-                </Button>
-              </Stack>
-            </Stack>
-          ))}
-          <Button onClick={onCreate}>Создать</Button>
-        </Stack>
-      </Box>
+      <ItemsList
+        data={mappedList ?? []}
+        title={'Пользователи'}
+        onDeleteItem={onDelete}
+        onEditItem={onEdit}
+        onCreate={toggleCreateVisible}
+      />
+      <ClientModal visible={createVisible} onClose={toggleCreateVisible} onSubmit={onSubmitCreate} />
+      <ClientModal
+        visible={editVisible}
+        onClose={toggleEditVisible}
+        onSubmit={onSubmitEdit}
+        client={currentClient}
+        submitText={'Сохранить'}
+      />
     </div>
   );
 };

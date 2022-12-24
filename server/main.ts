@@ -2,6 +2,7 @@ import { Accounts } from 'meteor/accounts-base';
 import { Meteor } from 'meteor/meteor';
 
 import { RolesEnum } from '/imports/api/user/';
+import '/imports/api/clients/';
 
 const SEED_USERNAME = 'test';
 const SEED_PASSWORD = 'test';

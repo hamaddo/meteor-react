@@ -33,6 +33,8 @@ Meteor.methods({
     }
 
     const { prevSurname, ...client } = request;
+
+    console.log('request', request);
     ClientsCollection.update(
       { _id: client._id, surname: prevSurname },
       {

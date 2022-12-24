@@ -71,7 +71,7 @@ export const UsersList = () => {
         visible={editVisible}
         user={currentUser}
         onSubmit={onSubmitEdit}
-        submitText={'Редактировать'}
+        submitText={'Сохранить'}
       />
     </div>
   );

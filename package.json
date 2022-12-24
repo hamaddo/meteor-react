@@ -19,6 +19,7 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-hook-form": "^7.39.5",
+    "react-input-mask": "^2.0.4",
     "react-router-dom": "^6.4.3",
     "react-select": "^5.6.1"
   },
@@ -33,11 +34,10 @@
     "@types/meteor": "^2.8.1",
     "@types/react": "^17.0.43",
     "@types/react-dom": "^17.0.14",
+    "@types/react-input-mask": "^3.0.2",
     "@typescript-eslint/eslint-plugin": "^5.44.0",
     "@typescript-eslint/parser": "^5.44.0",
     "eslint": "^8.30.0",
-    "prettier": "^2.8.0",
-    "typescript": "^4.9.4",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.5.0",
     "eslint-import-resolver-meteor": "^0.4.0",
@@ -46,6 +46,8 @@
     "eslint-plugin-meteor": "^7.3.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.31.11",
-    "eslint-plugin-react-hooks": "^4.6.0"
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "prettier": "^2.8.0",
+    "typescript": "^4.9.4"
   }
 }
