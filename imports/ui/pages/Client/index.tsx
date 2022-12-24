@@ -56,7 +56,7 @@ export const ClientsList = () => {
     <div>
       <ItemsList
         data={mappedList ?? []}
-        title={'Пользователи'}
+        title={'Клиенты'}
         onDeleteItem={onDelete}
         onEditItem={onEdit}
         onCreate={toggleCreateVisible}
