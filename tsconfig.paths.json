@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    "paths": {
-      "components/*": ["ui/components/*"],
-      "widgets/*": ["ui/widgets/*"],
-      "shared/*": ["ui/shared/*"]
-    }
-  }
-}

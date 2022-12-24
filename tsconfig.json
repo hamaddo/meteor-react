@@ -23,7 +23,6 @@
       "/*": ["*"]
     },
   },
-  "extends": "./tsconfig.paths.json",
   "include": [
     "imports",
     "client",
