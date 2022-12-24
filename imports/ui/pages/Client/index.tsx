@@ -53,7 +53,7 @@ export const ClientsList = () => {
   };
 
   return (
-    <div>
+    <>
       <ItemsList
         data={mappedList ?? []}
         title={'Клиенты'}
@@ -69,6 +69,6 @@ export const ClientsList = () => {
         client={currentClient}
         submitText={'Сохранить'}
       />
-    </div>
+    </>
   );
 };

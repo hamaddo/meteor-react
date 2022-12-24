@@ -57,7 +57,7 @@ export const UsersList = () => {
   };
 
   return (
-    <div>
+    <>
       <ItemsList
         data={mappedList ?? []}
         title={'Пользователи'}
@@ -73,6 +73,6 @@ export const UsersList = () => {
         onSubmit={onSubmitEdit}
         submitText={'Сохранить'}
       />
-    </div>
+    </>
   );
 };
