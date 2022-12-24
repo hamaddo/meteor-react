@@ -6,25 +6,26 @@ import Box from '@mui/material/Box';
 import { Meteor } from 'meteor/meteor';
 
 import { Loader } from '/imports/ui/shared/ui/Loader';
-import { useMeteorCall } from '/imports/ui/shared/hooks/useMeteorCall';
+import { useMeteorMethod } from '/imports/ui/shared/hooks/useMeteorMethod';
 import { ItemsList } from '/imports/ui/widgets/ItemsList';
 import { Client } from '/imports/api/clients';
 import { TRequest } from '/imports/api/requests';
 import { RequestModal } from '/imports/ui/components/RequestModal';
 import { RequestFields } from '/imports/ui/components/RequestModal/RequestForm';
+import { useToggle } from '/imports/ui/shared/hooks/useToggle';
 
 export const ClientView = () => {
   const params = useParams<{ id: string }>();
-  const { data: client, isLoading, request } = useMeteorCall<Client>('clients.getById', { id: params.id });
+  const { data: client, isLoading, request } = useMeteorMethod<Client>('clients.getById', { id: params.id });
 
   const {
     data: requests,
     isLoading: isRequestsLoading,
     request: fetchRequests,
-  } = useMeteorCall<TRequest[]>('requests.getByClientId', { id: params.id });
+  } = useMeteorMethod<TRequest[]>('requests.getByClientId', { id: params.id });
 
-  const [createVisible, setCreateVisible] = useState(false);
-  const [editVisible, setEditVisible] = useState(false);
+  const [createVisible, toggleCreateVisible] = useToggle();
+  const [editVisible, toggleEditVisible] = useToggle();
   const [currentRequest, setCurrentRequest] = useState<TRequest>();
 
   if (isLoading || isRequestsLoading) {
@@ -36,13 +37,6 @@ export const ClientView = () => {
     info: `${positionName} ${salary}`,
     id: _id,
   }));
-  const toggleCreateVisible = () => {
-    setCreateVisible((prev) => !prev);
-  };
-
-  const toggleEditVisible = () => {
-    setEditVisible((prev) => !prev);
-  };
   const onSubmitCreate = async (values: RequestFields) => {
     await Meteor.callAsync('requests.insert', { request: { ...values, clientId: params.id } });
     toggleCreateVisible();

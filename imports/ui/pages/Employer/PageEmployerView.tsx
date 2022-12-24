@@ -6,25 +6,26 @@ import Box from '@mui/material/Box';
 import { Meteor } from 'meteor/meteor';
 
 import { Loader } from '/imports/ui/shared/ui/Loader';
-import { useMeteorCall } from '/imports/ui/shared/hooks/useMeteorCall';
+import { useMeteorMethod } from '/imports/ui/shared/hooks/useMeteorMethod';
 import { ItemsList } from '/imports/ui/widgets/ItemsList';
 import { RequestFields } from '/imports/ui/components/RequestModal/RequestForm';
 import { Employer } from '/imports/api/employers';
 import { Offer } from '/imports/api/offers';
 import { OfferModal } from '/imports/ui/components/OffersModal';
+import { useToggle } from '/imports/ui/shared/hooks/useToggle';
 
 export const ClientView = () => {
   const params = useParams<{ id: string }>();
-  const { data: employer, isLoading, request } = useMeteorCall<Employer>('employers.getById', { id: params.id });
+  const { data: employer, isLoading, request } = useMeteorMethod<Employer>('employers.getById', { id: params.id });
 
   const {
     data: offers,
     isLoading: isOffers,
     request: fetchOffers,
-  } = useMeteorCall<Offer[]>('offers.getByEmployerId', { id: params.id });
+  } = useMeteorMethod<Offer[]>('offers.getByEmployerId', { id: params.id });
 
-  const [createVisible, setCreateVisible] = useState(false);
-  const [editVisible, setEditVisible] = useState(false);
+  const [createVisible, toggleCreateVisible] = useToggle();
+  const [editVisible, toggleEditVisible] = useToggle();
   const [currentOffer, setCurrentOffer] = useState<Offer>();
 
   if (isLoading || isOffers) {
@@ -35,13 +36,6 @@ export const ClientView = () => {
     info: `Должность: ${positionName}, зарплата: ${salary}, гендер: ${gender}`,
     id: _id,
   }));
-  const toggleCreateVisible = () => {
-    setCreateVisible((prev) => !prev);
-  };
-
-  const toggleEditVisible = () => {
-    setEditVisible((prev) => !prev);
-  };
   const onSubmitCreate = async (values: RequestFields) => {
     await Meteor.callAsync('offers.insert', { request: { ...values, employerId: params.id } });
     toggleCreateVisible();

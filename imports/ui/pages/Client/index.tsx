@@ -5,18 +5,20 @@ import { generatePath, useNavigate } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
 
 import { Loader } from '/imports/ui/shared/ui/Loader';
-import { useMeteorCall } from '/imports/ui/shared/hooks/useMeteorCall';
+import { useMeteorMethod } from '/imports/ui/shared/hooks/useMeteorMethod';
 import { ItemsList } from '/imports/ui/widgets/ItemsList';
 import { Client } from '/imports/api/clients';
 import { ClientModal } from '/imports/ui/components/ClientsModal';
 import { ClientFields } from '/imports/ui/components/ClientsModal/ClientForm';
 
+import { useToggle } from '../../shared/hooks/useToggle';
+
 import { routes } from './routes';
 
 export const ClientsList = () => {
-  const { data: clients, isLoading, request } = useMeteorCall<Client[]>('clients.get');
-  const [createVisible, setCreateVisible] = useState(false);
-  const [editVisible, setEditVisible] = useState(false);
+  const { data: clients, isLoading, request } = useMeteorMethod<Client[]>('clients.get');
+  const [createVisible, toggleCreateVisible] = useToggle();
+  const [editVisible, toggleEditVisible] = useToggle();
   const [currentClient, setCurrentClient] = useState<Client>();
   const navigate = useNavigate();
 
@@ -28,13 +30,6 @@ export const ClientsList = () => {
     info: `${name} ${middleName} ${surname} ${surname} - ${receiptNumber}`,
     id: _id,
   }));
-  const toggleCreateVisible = () => {
-    setCreateVisible((prev) => !prev);
-  };
-
-  const toggleEditVisible = () => {
-    setEditVisible((prev) => !prev);
-  };
   const onSubmitCreate = async (values: ClientFields) => {
     await Meteor.callAsync('clients.insert', { client: values });
     toggleCreateVisible();

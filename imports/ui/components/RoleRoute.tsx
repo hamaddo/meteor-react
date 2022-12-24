@@ -4,13 +4,13 @@ import { Outlet } from 'react-router-dom';
 
 import { ThemeProvider } from '@mui/material';
 
-import { useMeteorCall } from '../shared/hooks/useMeteorCall';
+import { useMeteorMethod } from '../shared/hooks/useMeteorMethod';
 import { Loader } from '../shared/ui/Loader';
 import { Navbar } from '../widgets/Navbar';
 
 import { theme } from '/imports/ui/shared/ui/theme';
 export const RoleRoute: FC<{ roles: string[] }> = ({ roles = [] }) => {
-  const { data, error, isLoading } = useMeteorCall<string>('user.getUserRole');
+  const { data, error, isLoading } = useMeteorMethod<string>('user.getUserRole');
   if (isLoading || !data) {
     return <Loader />;
   }

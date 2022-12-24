@@ -16,7 +16,7 @@ import Typography from '@mui/material/Typography';
 import { Meteor } from 'meteor/meteor';
 import { useTracker } from 'meteor/react-meteor-data';
 
-import { useMeteorCall } from '../../shared/hooks/useMeteorCall';
+import { useMeteorMethod } from '../../shared/hooks/useMeteorMethod';
 import { Loader } from '../../shared/ui/Loader';
 
 import { RolesEnum } from '/imports/api/user';
@@ -49,7 +49,7 @@ export const Navbar: FC = ({ children }) => {
   const user = useTracker(() => Meteor.user());
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
-  const { data: userRole, isLoading } = useMeteorCall<string>('user.getUserRole');
+  const { data: userRole, isLoading } = useMeteorMethod<string>('user.getUserRole');
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);

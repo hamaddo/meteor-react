@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { Meteor } from 'meteor/meteor';
 
-export const useMeteorCall = <T>(method: string, params?: any) => {
+export const useMeteorMethod = <T>(method: string, params?: any) => {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<T>();
   const [error, setError] = useState<unknown>();
@@ -14,10 +14,6 @@ export const useMeteorCall = <T>(method: string, params?: any) => {
       setData(data);
       setIsLoading(false);
     } catch (e) {
-      console.log('e', e);
-      console.log('data', data);
-      console.log('params', params);
-      console.log('method', method);
       setIsLoading(false);
       setError(e);
     }

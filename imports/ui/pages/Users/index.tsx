@@ -3,16 +3,17 @@ import React, { useState } from 'react';
 import { Meteor } from 'meteor/meteor';
 
 import { Loader } from '/imports/ui/shared/ui/Loader';
-import { useMeteorCall } from '/imports/ui/shared/hooks/useMeteorCall';
+import { useMeteorMethod } from '/imports/ui/shared/hooks/useMeteorMethod';
 import { ItemsList } from '/imports/ui/widgets/ItemsList';
 import { UserModal } from '/imports/ui/components/UserModal';
 import { UserFields } from '/imports/ui/components/UserModal/UserForm';
 import { UserType } from '/imports/api/user';
+import { useToggle } from '/imports/ui/shared/hooks/useToggle';
 
 export const UsersList = () => {
-  const { data: clients, isLoading, request } = useMeteorCall<UserType[]>('user.get');
-  const [createVisible, setCreateVisible] = useState(false);
-  const [editVisible, setEditVisible] = useState(false);
+  const { data: clients, isLoading, request } = useMeteorMethod<UserType[]>('user.get');
+  const [createVisible, toggleCreateVisible] = useToggle();
+  const [editVisible, toggleEditVisible] = useToggle();
   const [currentUser, setCurrentUser] = useState<UserType>();
 
   if (isLoading) {
@@ -23,13 +24,6 @@ export const UsersList = () => {
     info: `${username}`,
     id: _id,
   }));
-  const toggleCreateVisible = () => {
-    setCreateVisible((prev) => !prev);
-  };
-
-  const toggleEditVisible = () => {
-    setEditVisible((prev) => !prev);
-  };
   const onSubmitCreate = async (values: UserFields) => {
     await Meteor.callAsync('user.insert', { ...values, role: values.role.value });
     toggleCreateVisible();

@@ -5,7 +5,7 @@ import { generatePath, useNavigate } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
 
 import { Loader } from '/imports/ui/shared/ui/Loader';
-import { useMeteorCall } from '/imports/ui/shared/hooks/useMeteorCall';
+import { useMeteorMethod } from '/imports/ui/shared/hooks/useMeteorMethod';
 import { ItemsList } from '/imports/ui/widgets/ItemsList';
 import { EmployerFields } from '/imports/ui/components/EmployerModal/EmployerForm';
 
@@ -14,11 +14,12 @@ import { EmployerModal } from '../../components/EmployerModal';
 import { routes } from './routes';
 
 import { Employer } from '/imports/api/employers';
+import { useToggle } from '/imports/ui/shared/hooks/useToggle';
 
 export const EmployersList = () => {
-  const { data: employers, isLoading, request } = useMeteorCall<Employer[]>('employers.get');
-  const [createVisible, setCreateVisible] = useState(false);
-  const [editVisible, setEditVisible] = useState(false);
+  const { data: employers, isLoading, request } = useMeteorMethod<Employer[]>('employers.get');
+  const [createVisible, toggleCreateVisible] = useToggle();
+  const [editVisible, toggleEditVisible] = useToggle();
   const [currentEmployer, setCurrentEmployer] = useState<Employer>();
   const navigate = useNavigate();
 
@@ -30,13 +31,6 @@ export const EmployersList = () => {
     info: `[${ownershipType}] Название: ${name}, Адрес: ${address}, Телефон: ${phone} - ${registryNumber}`,
     id: _id,
   }));
-  const toggleCreateVisible = () => {
-    setCreateVisible((prev) => !prev);
-  };
-
-  const toggleEditVisible = () => {
-    setEditVisible((prev) => !prev);
-  };
   const onSubmitCreate = async (values: EmployerFields) => {
     await Meteor.callAsync('employers.insert', { employer: { ...values, ownershipType: values.ownershipType.value } });
     toggleCreateVisible();
@@ -57,7 +51,6 @@ export const EmployersList = () => {
 
   const onEdit = async (id: string) => {
     const employer = await Meteor.callAsync('employers.getById', { id });
-    console.log('employer', employer);
     setCurrentEmployer(employer);
     toggleEditVisible();
   };
