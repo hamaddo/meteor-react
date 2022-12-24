@@ -10,13 +10,13 @@ import { clientRoutes } from '/imports/ui/pages/Client/routes';
 import { usersRoutes } from '/imports/ui/pages/Users/routes';
 import { RoleRoute } from '/imports/ui/components/RoleRoute';
 import { RolesEnum } from '/imports/api/user';
+import { employersRoutes } from '/imports/ui/pages/Employer/routes';
 
 export const App = () => {
-  console.log('MONGO_URL', process.env.REACT_APP_MONGO_URL);
   return useRoutes([
     {
       element: <ProtectedRoute />,
-      children: [...clientRoutes],
+      children: [...clientRoutes, ...employersRoutes],
     },
     {
       element: <PublicRoute />,

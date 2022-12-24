@@ -9,17 +9,9 @@ import TextField from '@mui/material/TextField';
 
 import { Client } from '/imports/api/clients';
 
-export interface ClientFields {
-  name: string;
-  surname: string;
-  middleName: string;
-  registryNumber: string;
-  address: string;
-  gender: string;
-  receiptNumber: string;
-  phone: string;
-}
-interface UserFormProps {
+export type ClientFields = Omit<Client, '_id'>;
+
+interface Props {
   title: string;
   onSubmit: (values: ClientFields) => void;
   onCancel: () => void;
@@ -27,7 +19,7 @@ interface UserFormProps {
   submitText?: string;
 }
 
-export const ClientForm: React.FC<UserFormProps> = ({ title, client, onSubmit, submitText = 'Создать', onCancel }) => {
+export const ClientForm: React.FC<Props> = ({ title, client, onSubmit, submitText = 'Создать', onCancel }) => {
   const methods = useForm<ClientFields>({
     defaultValues: client,
   });

@@ -4,6 +4,8 @@ import { Meteor } from 'meteor/meteor';
 import { RolesEnum } from '/imports/api/user/';
 import '/imports/api/clients/';
 import '/imports/api/requests/';
+import '/imports/api/employers/';
+import '/imports/api/offers/';
 
 const SEED_USERNAME = 'test';
 const SEED_PASSWORD = 'test';

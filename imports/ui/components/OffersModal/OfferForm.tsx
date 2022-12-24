@@ -6,20 +6,20 @@ import { Button } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 
-import { TRequest } from '/imports/api/requests';
+import { Offer } from '/imports/api/offers';
 
-export type RequestFields = Omit<TRequest, '_id' | 'clientId'>;
+export type OfferFields = Omit<Offer, '_id' | 'employerId'>;
 interface Props {
   title: string;
-  onSubmit: (values: RequestFields) => void;
+  onSubmit: (values: OfferFields) => void;
   onCancel: () => void;
-  request?: TRequest;
+  offer?: Offer;
   submitText?: string;
 }
 
-export const RequestForm: React.FC<Props> = ({ title, request, onSubmit, submitText = 'Создать', onCancel }) => {
-  const methods = useForm<RequestFields>({
-    defaultValues: request,
+export const OfferForm: React.FC<Props> = ({ title, offer, onSubmit, submitText = 'Создать', onCancel }) => {
+  const methods = useForm<OfferFields>({
+    defaultValues: offer,
   });
 
   return (
@@ -27,6 +27,7 @@ export const RequestForm: React.FC<Props> = ({ title, request, onSubmit, submitT
       <Stack spacing={2} width={'100%'}>
         <TextField {...methods.register('positionName')} label="Название позиции" />
         <TextField {...methods.register('salary')} label="Ожидаемая зарплата" />
+        <TextField {...methods.register('gender')} label="Ожидаемый пол сотрудника" />
         <Stack direction={'row'} justifyContent={'end'} spacing={2} width={'100%'}>
           <Button type={'reset'} variant={'contained'} color={'primary'} onClick={onCancel}>
             Отмена
