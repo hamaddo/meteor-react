@@ -4,8 +4,16 @@ import { Employer, EmployersCollection } from './EmployersCollection';
 
 import { RequestsCollection } from '/imports/api/requests';
 
+export enum EmployerMethods {
+  Get = 'employers.get',
+  GetById = 'employers.getById',
+  Insert = 'employers.insert',
+  Remove = 'employers.remove',
+  Update = 'employers.update',
+}
+
 Meteor.methods({
-  'employers.get'() {
+  [EmployerMethods.Get]() {
     if (!this.userId) {
       throw new Meteor.Error('Not authorized.');
     }
@@ -13,20 +21,19 @@ Meteor.methods({
 
     return query.fetch();
   },
-  'employers.getById'({ id }: { id: string }) {
+  [EmployerMethods.GetById]({ id }: { id: string }) {
     if (!this.userId) {
       throw new Meteor.Error('Not authorized.');
     }
     return EmployersCollection.findOne({ _id: id });
   },
 
-  'employers.insert'({ employer }: { employer: Employer }) {
+  [EmployerMethods.Insert]({ employer }: { employer: Employer }) {
     EmployersCollection.insert(employer);
   },
 
-  'employers.remove'({ employerId }: { employerId: string }) {
+  [EmployerMethods.Remove]({ employerId }: { employerId: string }) {
     const relatedRequests = RequestsCollection.find({ employerId: employerId }).fetch();
-    console.log('relatedRequests', relatedRequests);
     if (relatedRequests) {
       relatedRequests.forEach((req) => {
         RequestsCollection.remove(req._id);
@@ -35,14 +42,13 @@ Meteor.methods({
     EmployersCollection.remove(employerId);
   },
 
-  'employers.update'({ request }: { request: Employer & { prevRegistryNumber: string } }) {
+  [EmployerMethods.Update]({ request }: { request: Employer & { prevRegistryNumber: string } }) {
     if (!this.userId) {
       throw new Meteor.Error('Not authorized.');
     }
 
     const { prevRegistryNumber, ...employer } = request;
 
-    console.log('request', request);
     EmployersCollection.update(
       { _id: employer._id, registryNumber: prevRegistryNumber },
       {

@@ -15,9 +15,10 @@ import { routes } from './routes';
 
 import { Employer } from '/imports/api/employers';
 import { useToggle } from '/imports/ui/shared/hooks/useToggle';
+import { EmployerMethods } from '/imports/api/employers/employerMethods';
 
 export const EmployersList = () => {
-  const { data: employers, isLoading, request } = useMeteorMethod<Employer[]>('employers.get');
+  const { data: employers, isLoading, request } = useMeteorMethod<Employer[]>(EmployerMethods.Get);
   const [createVisible, toggleCreateVisible] = useToggle();
   const [editVisible, toggleEditVisible] = useToggle();
   const [currentEmployer, setCurrentEmployer] = useState<Employer>();
@@ -32,13 +33,15 @@ export const EmployersList = () => {
     id: _id,
   }));
   const onSubmitCreate = async (values: EmployerFields) => {
-    await Meteor.callAsync('employers.insert', { employer: { ...values, ownershipType: values.ownershipType.value } });
+    await Meteor.callAsync(EmployerMethods.Insert, {
+      employer: { ...values, ownershipType: values.ownershipType.value },
+    });
     toggleCreateVisible();
     await request();
   };
 
   const onSubmitEdit = async (values: EmployerFields) => {
-    await Meteor.callAsync('employers.update', {
+    await Meteor.callAsync(EmployerMethods.Update, {
       request: {
         ...values,
         ownershipType: values.ownershipType.value,
@@ -50,12 +53,12 @@ export const EmployersList = () => {
   };
 
   const onEdit = async (id: string) => {
-    const employer = await Meteor.callAsync('employers.getById', { id });
+    const employer = await Meteor.callAsync(EmployerMethods.GetById, { id });
     setCurrentEmployer(employer);
     toggleEditVisible();
   };
   const onDelete = async (id: string) => {
-    Meteor.call('employers.remove', { employerId: id });
+    Meteor.call(EmployerMethods.Remove, { employerId: id });
     await request();
   };
 

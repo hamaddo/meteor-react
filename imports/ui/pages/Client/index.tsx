@@ -15,8 +15,10 @@ import { useToggle } from '../../shared/hooks/useToggle';
 
 import { routes } from './routes';
 
+import { ClientMethods } from '/imports/api/clients/clientMethods';
+
 export const ClientsList = () => {
-  const { data: clients, isLoading, request } = useMeteorMethod<Client[]>('clients.get');
+  const { data: clients, isLoading, request } = useMeteorMethod<Client[]>(ClientMethods.Get);
   const [createVisible, toggleCreateVisible] = useToggle();
   const [editVisible, toggleEditVisible] = useToggle();
   const [currentClient, setCurrentClient] = useState<Client>();
@@ -31,13 +33,13 @@ export const ClientsList = () => {
     id: _id,
   }));
   const onSubmitCreate = async (values: ClientFields) => {
-    await Meteor.callAsync('clients.insert', { client: values });
+    await Meteor.callAsync(ClientMethods.Insert, { client: values });
     toggleCreateVisible();
     await request();
   };
 
   const onSubmitEdit = async (values: ClientFields) => {
-    await Meteor.callAsync('clients.update', {
+    await Meteor.callAsync(ClientMethods.Update, {
       request: { ...values, prevRegistryNumber: currentClient?.registryNumber },
     });
     toggleEditVisible();
@@ -45,12 +47,12 @@ export const ClientsList = () => {
   };
 
   const onEdit = async (id: string) => {
-    const client = await Meteor.callAsync('clients.getById', { id });
+    const client = await Meteor.callAsync(ClientMethods.GetById, { id });
     setCurrentClient(client);
     toggleEditVisible();
   };
   const onDelete = async (id: string) => {
-    Meteor.call('clients.remove', { clientId: id });
+    Meteor.call(ClientMethods.Remove, { clientId: id });
     await request();
   };
 

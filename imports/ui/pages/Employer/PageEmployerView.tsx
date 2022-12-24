@@ -13,16 +13,18 @@ import { Employer } from '/imports/api/employers';
 import { Offer } from '/imports/api/offers';
 import { OfferModal } from '/imports/ui/components/OffersModal';
 import { useToggle } from '/imports/ui/shared/hooks/useToggle';
+import { EmployerMethods } from '/imports/api/employers/employerMethods';
+import { OffersMethods } from '/imports/api/offers/offersMethods';
 
 export const ClientView = () => {
   const params = useParams<{ id: string }>();
-  const { data: employer, isLoading, request } = useMeteorMethod<Employer>('employers.getById', { id: params.id });
+  const { data: employer, isLoading, request } = useMeteorMethod<Employer>(EmployerMethods.GetById, { id: params.id });
 
   const {
     data: offers,
     isLoading: isOffers,
     request: fetchOffers,
-  } = useMeteorMethod<Offer[]>('offers.getByEmployerId', { id: params.id });
+  } = useMeteorMethod<Offer[]>(OffersMethods.GetByEmployerId, { id: params.id });
 
   const [createVisible, toggleCreateVisible] = useToggle();
   const [editVisible, toggleEditVisible] = useToggle();
@@ -37,23 +39,23 @@ export const ClientView = () => {
     id: _id,
   }));
   const onSubmitCreate = async (values: RequestFields) => {
-    await Meteor.callAsync('offers.insert', { request: { ...values, employerId: params.id } });
+    await Meteor.callAsync(OffersMethods.Insert, { request: { ...values, employerId: params.id } });
     toggleCreateVisible();
     await fetchOffers();
   };
   const onSubmitEdit = async (values: RequestFields) => {
-    await Meteor.callAsync('offers.update', { request: { ...values, employerId: params.id } });
+    await Meteor.callAsync(OffersMethods.Update, { request: { ...values, employerId: params.id } });
     toggleEditVisible();
     await fetchOffers();
   };
 
   const onEdit = async (id: string) => {
-    const request = await Meteor.callAsync('offers.getById', { id });
+    const request = await Meteor.callAsync(OffersMethods.GetById, { id });
     setCurrentOffer(request);
     toggleEditVisible();
   };
   const onDelete = async (id: string) => {
-    Meteor.call('offers.remove', { requestId: id });
+    Meteor.call(OffersMethods.Remove, { requestId: id });
     await fetchOffers();
   };
 

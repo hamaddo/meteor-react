@@ -2,8 +2,17 @@ import { Meteor } from 'meteor/meteor';
 
 import { TRequest, RequestsCollection } from './RequestsCollection';
 
+export enum RequestMethods {
+  Get = 'requests.get',
+  GetById = 'requests.getById',
+  Insert = 'requests.insert',
+  GetByClientId = 'requests.getByClientId',
+  Remove = 'requests.remove',
+  Update = 'requests.update',
+}
+
 Meteor.methods({
-  'requests.get'() {
+  [RequestMethods.Get]() {
     if (!this.userId) {
       throw new Meteor.Error('Not authorized.');
     }
@@ -12,28 +21,28 @@ Meteor.methods({
     return query.fetch();
   },
 
-  'requests.getById'({ id }: { id: string }) {
+  [RequestMethods.GetById]({ id }: { id: string }) {
     if (!this.userId) {
       throw new Meteor.Error('Not authorized.');
     }
     return RequestsCollection.findOne({ _id: id });
   },
 
-  'requests.insert'({ request }: { request: TRequest }) {
+  [RequestMethods.Insert]({ request }: { request: TRequest }) {
     RequestsCollection.insert(request);
   },
 
-  'requests.getByClientId'({ id }: { id: string }) {
+  [RequestMethods.GetByClientId]({ id }: { id: string }) {
     const query = RequestsCollection.find({ clientId: id });
 
     return query.fetch();
   },
 
-  'requests.remove'({ requestId }: { requestId: string }) {
+  [RequestMethods.Remove]({ requestId }: { requestId: string }) {
     RequestsCollection.remove(requestId);
   },
 
-  'requests.update'({ request }: { request: TRequest & { clientId: string } }) {
+  [RequestMethods.Update]({ request }: { request: TRequest & { clientId: string } }) {
     if (!this.userId) {
       throw new Meteor.Error('Not authorized.');
     }

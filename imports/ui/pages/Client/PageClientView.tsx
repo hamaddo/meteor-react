@@ -13,16 +13,18 @@ import { TRequest } from '/imports/api/requests';
 import { RequestModal } from '/imports/ui/components/RequestModal';
 import { RequestFields } from '/imports/ui/components/RequestModal/RequestForm';
 import { useToggle } from '/imports/ui/shared/hooks/useToggle';
+import { ClientMethods } from '/imports/api/clients/clientMethods';
+import { RequestMethods } from '/imports/api/requests/requestMethods';
 
 export const ClientView = () => {
   const params = useParams<{ id: string }>();
-  const { data: client, isLoading, request } = useMeteorMethod<Client>('clients.getById', { id: params.id });
+  const { data: client, isLoading, request } = useMeteorMethod<Client>(ClientMethods.GetById, { id: params.id });
 
   const {
     data: requests,
     isLoading: isRequestsLoading,
     request: fetchRequests,
-  } = useMeteorMethod<TRequest[]>('requests.getByClientId', { id: params.id });
+  } = useMeteorMethod<TRequest[]>(RequestMethods.GetByClientId, { id: params.id });
 
   const [createVisible, toggleCreateVisible] = useToggle();
   const [editVisible, toggleEditVisible] = useToggle();
@@ -38,23 +40,23 @@ export const ClientView = () => {
     id: _id,
   }));
   const onSubmitCreate = async (values: RequestFields) => {
-    await Meteor.callAsync('requests.insert', { request: { ...values, clientId: params.id } });
+    await Meteor.callAsync(RequestMethods.Insert, { request: { ...values, clientId: params.id } });
     toggleCreateVisible();
     await fetchRequests();
   };
   const onSubmitEdit = async (values: RequestFields) => {
-    await Meteor.callAsync('requests.update', { request: { ...values, clientId: params.id } });
+    await Meteor.callAsync(RequestMethods.Update, { request: { ...values, clientId: params.id } });
     toggleEditVisible();
     await fetchRequests();
   };
 
   const onEdit = async (id: string) => {
-    const request = await Meteor.callAsync('requests.getById', { id });
+    const request = await Meteor.callAsync(RequestMethods.GetById, { id });
     setCurrentRequest(request);
     toggleEditVisible();
   };
   const onDelete = async (id: string) => {
-    Meteor.call('requests.remove', { requestId: id });
+    Meteor.call(RequestMethods.Remove, { requestId: id });
     await fetchRequests();
   };
 

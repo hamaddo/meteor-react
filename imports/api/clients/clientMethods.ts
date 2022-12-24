@@ -4,8 +4,16 @@ import { Client, ClientsCollection } from './ClientsCollection';
 
 import { RequestsCollection } from '/imports/api/requests';
 
+export enum ClientMethods {
+  Get = 'clients.get',
+  GetById = 'clients.getById',
+  Insert = 'clients.insert',
+  Remove = 'clients.remove',
+  Update = 'clients.update',
+}
+
 Meteor.methods({
-  'clients.get'() {
+  [ClientMethods.Get]() {
     if (!this.userId) {
       throw new Meteor.Error('Not authorized.');
     }
@@ -13,18 +21,18 @@ Meteor.methods({
 
     return query.fetch();
   },
-  'clients.getById'({ id }: { id: string }) {
+  [ClientMethods.GetById]({ id }: { id: string }) {
     if (!this.userId) {
       throw new Meteor.Error('Not authorized.');
     }
     return ClientsCollection.findOne({ _id: id });
   },
 
-  'clients.insert'({ client }: { client: Client }) {
+  [ClientMethods.Insert]({ client }: { client: Client }) {
     ClientsCollection.insert(client);
   },
 
-  'clients.remove'({ clientId }: { clientId: string }) {
+  [ClientMethods.Remove]({ clientId }: { clientId: string }) {
     const relatedRequests = RequestsCollection.find({ clientId: clientId }).fetch();
     console.log('relatedRequests', relatedRequests);
     if (relatedRequests) {
@@ -35,14 +43,13 @@ Meteor.methods({
     ClientsCollection.remove(clientId);
   },
 
-  'clients.update'({ request }: { request: Client & { prevRegistryNumber: string } }) {
+  [ClientMethods.Update]({ request }: { request: Client & { prevRegistryNumber: string } }) {
     if (!this.userId) {
       throw new Meteor.Error('Not authorized.');
     }
 
     const { prevRegistryNumber, ...client } = request;
 
-    console.log('request', request);
     ClientsCollection.update(
       { _id: client._id, registryNumber: prevRegistryNumber },
       {
