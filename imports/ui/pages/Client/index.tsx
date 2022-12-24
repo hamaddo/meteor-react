@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+import { generatePath, useNavigate } from 'react-router-dom';
+
 import { Meteor } from 'meteor/meteor';
 
 import { Loader } from '/imports/ui/shared/ui/Loader';
@@ -9,11 +11,14 @@ import { Client } from '/imports/api/clients';
 import { ClientModal } from '/imports/ui/components/ClientsModal';
 import { ClientFields } from '/imports/ui/components/ClientsModal/ClientForm';
 
+import { routes } from './routes';
+
 export const ClientsList = () => {
   const { data: clients, isLoading, request } = useMeteorCall<Client[]>('clients.get');
   const [createVisible, setCreateVisible] = useState(false);
   const [editVisible, setEditVisible] = useState(false);
   const [currentClient, setCurrentClient] = useState<Client>();
+  const navigate = useNavigate();
 
   if (isLoading) {
     return <Loader />;
@@ -37,7 +42,9 @@ export const ClientsList = () => {
   };
 
   const onSubmitEdit = async (values: ClientFields) => {
-    await Meteor.callAsync('clients.update', { request: { ...values, prevSurname: currentClient?.surname } });
+    await Meteor.callAsync('clients.update', {
+      request: { ...values, prevRegistryNumber: currentClient?.registryNumber },
+    });
     toggleEditVisible();
     await request();
   };
@@ -52,6 +59,10 @@ export const ClientsList = () => {
     await request();
   };
 
+  const onItemClick = (id: string) => {
+    navigate(generatePath(routes.view, { id }));
+  };
+
   return (
     <>
       <ItemsList
@@ -60,6 +71,7 @@ export const ClientsList = () => {
         onDeleteItem={onDelete}
         onEditItem={onEdit}
         onCreate={toggleCreateVisible}
+        onItemClick={onItemClick}
       />
       <ClientModal visible={createVisible} onClose={toggleCreateVisible} onSubmit={onSubmitCreate} />
       <ClientModal

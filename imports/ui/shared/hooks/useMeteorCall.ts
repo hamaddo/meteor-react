@@ -14,6 +14,10 @@ export const useMeteorCall = <T>(method: string, params?: any) => {
       setData(data);
       setIsLoading(false);
     } catch (e) {
+      console.log('e', e);
+      console.log('data', data);
+      console.log('params', params);
+      console.log('method', method);
       setIsLoading(false);
       setError(e);
     }

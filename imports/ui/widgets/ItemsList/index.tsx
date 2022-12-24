@@ -8,9 +8,10 @@ type Props = {
   data: Array<{ id: string; info: string }>;
   onDeleteItem?: (id: string) => void;
   onEditItem?: (id: string) => void;
+  onItemClick?: (id: string) => void;
   onCreate?: () => void;
 };
-export const ItemsList: React.FC<Props> = ({ title, data, onDeleteItem, onEditItem, onCreate }) => {
+export const ItemsList: React.FC<Props> = ({ title, data, onDeleteItem, onEditItem, onItemClick, onCreate }) => {
   return (
     <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
       <Box width={'100%'} display="flex" flexDirection="row" justifyContent="space-between" alignItems={'center'}>
@@ -30,7 +31,16 @@ export const ItemsList: React.FC<Props> = ({ title, data, onDeleteItem, onEditIt
       <Stack gap={2} width={'100%'}>
         {data?.map(({ info, id }) => (
           <Box key={id} borderRadius="8px" border={'1px solid gray'}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={1} padding={'10px'}>
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              onClick={() => {
+                if (onItemClick) onItemClick(id);
+              }}
+              spacing={1}
+              padding={'10px'}
+            >
               <div style={{ width: '100%' }}>{info}</div>
 
               <Stack justifyContent="center" direction="row" gap="16px" className="edit-buttons">

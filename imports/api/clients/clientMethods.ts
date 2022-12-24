@@ -2,6 +2,8 @@ import { Meteor } from 'meteor/meteor';
 
 import { Client, ClientsCollection } from './ClientsCollection';
 
+import { RequestsCollection } from '/imports/api/requests';
+
 Meteor.methods({
   'clients.get'() {
     if (!this.userId) {
@@ -11,7 +13,6 @@ Meteor.methods({
 
     return query.fetch();
   },
-
   'clients.getById'({ id }: { id: string }) {
     if (!this.userId) {
       throw new Meteor.Error('Not authorized.');
@@ -24,19 +25,26 @@ Meteor.methods({
   },
 
   'clients.remove'({ clientId }: { clientId: string }) {
+    const relatedRequests = RequestsCollection.find({ clientId: clientId }).fetch();
+    console.log('relatedRequests', relatedRequests);
+    if (relatedRequests) {
+      relatedRequests.forEach((req) => {
+        RequestsCollection.remove(req._id);
+      });
+    }
     ClientsCollection.remove(clientId);
   },
 
-  'clients.update'({ request }: { request: Client & { prevSurname: string } }) {
+  'clients.update'({ request }: { request: Client & { prevRegistryNumber: string } }) {
     if (!this.userId) {
       throw new Meteor.Error('Not authorized.');
     }
 
-    const { prevSurname, ...client } = request;
+    const { prevRegistryNumber, ...client } = request;
 
     console.log('request', request);
     ClientsCollection.update(
-      { _id: client._id, surname: prevSurname },
+      { _id: client._id, registryNumber: prevRegistryNumber },
       {
         $set: {
           ...client,

@@ -2,7 +2,7 @@
   "name": "lab3",
   "private": true,
   "scripts": {
-    "start": "SET MONGO_URL=mongodb://localhost:27017/admin && meteor run",
+    "start": "cross-env MONGO_URL=mongodb://localhost:27017/lab-meteor meteor run",
     "test": "meteor test --once --driver-package meteortesting:mocha",
     "test-app": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha",
     "visualize": "meteor --production --extra-packages bundle-visualizer"
@@ -15,6 +15,7 @@
     "@mui/icons-material": "^5.10.15",
     "@mui/material": "^5.10.15",
     "@mui/x-date-pickers": "^5.0.9",
+    "cross-env": "^7.0.3",
     "meteor-node-stubs": "^1.2.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",

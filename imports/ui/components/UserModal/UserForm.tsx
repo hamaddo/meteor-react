@@ -32,10 +32,12 @@ export const UserForm: React.FC<UserFormProps> = ({ title, user, onSubmit, submi
   const methods = useForm<UserFields>({
     defaultValues: {
       ...user,
-      role: {
-        value: user?.role,
-        label: user?.role ? roleMap[user?.role] : undefined,
-      },
+      role: user?.role
+        ? {
+            value: user.role,
+            label: roleMap[user?.role],
+          }
+        : undefined,
     },
   });
 
@@ -54,7 +56,7 @@ export const UserForm: React.FC<UserFormProps> = ({ title, user, onSubmit, submi
                   { value: RolesEnum.ADMIN, label: 'Админ' },
                   { value: RolesEnum.USER, label: 'Пользователь' },
                 ]}
-              ></Select>
+              />
             );
           }}
           name={'role'}

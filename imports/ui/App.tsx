@@ -12,6 +12,7 @@ import { RoleRoute } from '/imports/ui/components/RoleRoute';
 import { RolesEnum } from '/imports/api/user';
 
 export const App = () => {
+  console.log('MONGO_URL', process.env.REACT_APP_MONGO_URL);
   return useRoutes([
     {
       element: <ProtectedRoute />,
