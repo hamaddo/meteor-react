@@ -1,54 +1,29 @@
-import React, { useState } from 'react';
-
-import { Meteor } from 'meteor/meteor';
+import React from 'react';
 
 import { Loader } from '/imports/ui/shared/ui/Loader';
-import { useMeteorMethod } from '/imports/ui/shared/hooks/useMeteorMethod';
 import { ItemsList } from '/imports/ui/widgets/ItemsList';
 import { UserModal } from '/imports/ui/components/UserModal';
-import { UserFields } from '/imports/ui/components/UserModal/UserForm';
-import { UserType } from '/imports/api/user';
-import { useToggle } from '/imports/ui/shared/hooks/useToggle';
+
+import { useLocalModel } from './model';
 
 export const UsersList = () => {
-  const { data: clients, isLoading, request } = useMeteorMethod<UserType[]>('user.get');
-  const [createVisible, toggleCreateVisible] = useToggle();
-  const [editVisible, toggleEditVisible] = useToggle();
-  const [currentUser, setCurrentUser] = useState<UserType>();
+  const {
+    mappedList,
+    isLoading,
+    createVisible,
+    editVisible,
+    currentUser,
+    toggleEditVisible,
+    toggleCreateVisible,
+    onSubmitCreate,
+    onSubmitEdit,
+    onEdit,
+    onDelete,
+  } = useLocalModel();
 
   if (isLoading) {
     return <Loader />;
   }
-
-  const mappedList = clients?.map(({ username, _id }) => ({
-    info: `${username}`,
-    id: _id,
-  }));
-  const onSubmitCreate = async (values: UserFields) => {
-    await Meteor.callAsync('user.insert', { ...values, role: values.role.value });
-    toggleCreateVisible();
-    await request();
-  };
-
-  const onSubmitEdit = async (values: UserFields) => {
-    await Meteor.callAsync('user.update', {
-      userId: currentUser?._id,
-      username: values.username,
-      role: values.role.value,
-    });
-    toggleEditVisible();
-    await request();
-  };
-
-  const onEdit = async (id: string) => {
-    const user = await Meteor.callAsync('user.getById', { id });
-    setCurrentUser(user);
-    toggleEditVisible();
-  };
-  const onDelete = async (id: string) => {
-    Meteor.call('user.remove', { userId: id });
-    await request();
-  };
 
   return (
     <>

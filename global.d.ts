@@ -9,7 +9,7 @@ declare module 'meteor/meteor' {
     }
 
     interface User {
-      role?: string;
+      role: string;
     }
   }
 }

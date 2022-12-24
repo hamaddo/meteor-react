@@ -3,8 +3,17 @@ import { Meteor } from 'meteor/meteor';
 
 import { RolesEnum } from '/imports/api/user/index';
 
+export enum UserMethods {
+  Get = 'user.get',
+  GetById = 'user.getById',
+  GetUserRole = 'user.getUserRole',
+  Insert = 'user.insert',
+  Remove = 'user.remove',
+  Update = 'user.update',
+}
+
 Meteor.methods({
-  'user.get'() {
+  [UserMethods.Get]() {
     if (!this.userId) {
       throw new Meteor.Error('Not authorized.');
     }
@@ -12,7 +21,7 @@ Meteor.methods({
     return Meteor.users.find({}).fetch();
   },
 
-  'user.getById'({ id }: { id: string }) {
+  [UserMethods.GetById]({ id }: { id: string }) {
     if (!this.userId) {
       throw new Meteor.Error('Not authorized.');
     }
@@ -20,7 +29,7 @@ Meteor.methods({
     return Meteor.users.findOne({ _id: id });
   },
 
-  'user.insert'({ username, password, role }: { username: string; password: string; role: RolesEnum }) {
+  [UserMethods.Insert]({ username, password, role }: { username: string; password: string; role: RolesEnum }) {
     if (!this.userId) {
       throw new Meteor.Error('Not authorized.');
     }
@@ -40,7 +49,7 @@ Meteor.methods({
     return user;
   },
 
-  'user.remove'({ userId }: { userId: string }) {
+  [UserMethods.Remove]({ userId }: { userId: string }) {
     if (!this.userId) {
       throw new Meteor.Error('Not authorized.');
     }
@@ -48,17 +57,15 @@ Meteor.methods({
     Meteor.users.remove({ _id: userId });
   },
 
-  'user.getUserRole'() {
+  [UserMethods.GetUserRole]() {
     if (!this.userId) {
       throw new Meteor.Error('Not authorized.');
     }
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     return Meteor.users.findOne({ _id: this.userId })?.role;
   },
 
-  'user.update'({ userId, username, role }: { userId: string; username: string; role: RolesEnum }) {
+  [UserMethods.Update]({ userId, username, role }: { userId: string; username: string; role: RolesEnum }) {
     if (!this.userId) {
       throw new Meteor.Error('Not authorized.');
     }

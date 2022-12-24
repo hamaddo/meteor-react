@@ -9,8 +9,9 @@ import { Loader } from '../shared/ui/Loader';
 import { Navbar } from '../widgets/Navbar';
 
 import { theme } from '/imports/ui/shared/ui/theme';
+import { UserMethods } from '/imports/api/user/userMethods';
 export const RoleRoute: FC<{ roles: string[] }> = ({ roles = [] }) => {
-  const { data, error, isLoading } = useMeteorMethod<string>('user.getUserRole');
+  const { data, error, isLoading } = useMeteorMethod<string>(UserMethods.GetUserRole);
   if (isLoading || !data) {
     return <Loader />;
   }

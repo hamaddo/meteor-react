@@ -20,6 +20,7 @@ import { useMeteorMethod } from '../../shared/hooks/useMeteorMethod';
 import { Loader } from '../../shared/ui/Loader';
 
 import { RolesEnum } from '/imports/api/user';
+import { UserMethods } from '/imports/api/user/userMethods';
 
 type ListType = {
   text: string;
@@ -49,7 +50,7 @@ export const Navbar: FC = ({ children }) => {
   const user = useTracker(() => Meteor.user());
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
-  const { data: userRole, isLoading } = useMeteorMethod<string>('user.getUserRole');
+  const { data: userRole, isLoading } = useMeteorMethod<string>(UserMethods.GetUserRole);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);

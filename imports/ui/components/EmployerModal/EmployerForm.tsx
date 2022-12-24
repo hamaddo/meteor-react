@@ -44,8 +44,6 @@ export const EmployerForm: React.FC<UserFormProps> = ({
     },
   });
 
-  console.log('employer inside', employer);
-
   return (
     <form onSubmit={methods.handleSubmit(onSubmit)} title={title}>
       <Stack spacing={2} width={'100%'}>
