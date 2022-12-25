@@ -77,7 +77,7 @@ export const Navbar: FC = ({ children }) => {
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             <Typography variant="h6" noWrap component="div" sx={{ display: { xs: 'node', md: 'flex' } }}>
-              [Копия] HH
+              Hot hunters
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
               {list.map((page) => {
