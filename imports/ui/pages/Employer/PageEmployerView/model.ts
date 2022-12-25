@@ -8,9 +8,10 @@ import { EmployerMethods } from '/imports/api/employers/employerMethods';
 import { Offer } from '/imports/api/offers';
 import { OffersMethods } from '/imports/api/offers/offersMethods';
 import { useToggle } from '/imports/ui/shared/hooks/useToggle';
-import { RequestFields } from '/imports/ui/components/RequestModal/RequestForm';
 
 import { Meteor } from 'meteor/meteor';
+
+import { OfferFields } from '/imports/ui/components/OffersModal/OfferForm';
 
 export const useLocalModel = () => {
   const params = useParams<{ id: string }>();
@@ -31,12 +32,12 @@ export const useLocalModel = () => {
     id: _id,
   }));
 
-  const onSubmitCreate = async (values: RequestFields) => {
+  const onSubmitCreate = async (values: OfferFields) => {
     await Meteor.callAsync(OffersMethods.Insert, { request: { ...values, employerId: params.id } });
     toggleCreateVisible();
     await fetchOffers();
   };
-  const onSubmitEdit = async (values: RequestFields) => {
+  const onSubmitEdit = async (values: OfferFields) => {
     await Meteor.callAsync(OffersMethods.Update, { request: { ...values, employerId: params.id } });
     toggleEditVisible();
     await fetchOffers();
